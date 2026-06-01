@@ -1,0 +1,241 @@
+{
+  "report_meta": {
+    "agent_name": "system-configuration-check-agent",
+    "timestamp": "2026-06-01T00:00:00+00:00",
+    "hostname": "sample-host",
+    "collection_status": "partial",
+    "warnings": [
+      "dmidecode: permission denied",
+      "nvidia-smi: command not found"
+    ]
+  },
+  "system_summary": {
+    "os": {
+      "section": "os",
+      "distro": "ubuntu",
+      "version": "22.04",
+      "pretty_name": "Ubuntu 22.04.5 LTS",
+      "os_release_raw_source": "/etc/os-release",
+      "confidence": "high",
+      "field_confidence": {
+        "distro": "high",
+        "version": "high",
+        "pretty_name": "high",
+        "os_release_raw_source": "high"
+      },
+      "field_sources": {
+        "distro": ["/etc/os-release"],
+        "version": ["/etc/os-release"],
+        "pretty_name": ["/etc/os-release"],
+        "os_release_raw_source": ["/etc/os-release"]
+      },
+      "notes": []
+    },
+    "kernel": {
+      "section": "kernel",
+      "kernel_version": "6.8.0-94-generic",
+      "kernel_arch": "x86_64",
+      "cmdline": "amd_iommu=on iommu=pt",
+      "important_kernel_args": ["amd_iommu=on", "iommu=pt"],
+      "confidence": "high",
+      "field_confidence": {
+        "kernel_version": "high",
+        "kernel_arch": "medium",
+        "cmdline": "high",
+        "important_kernel_args": "high"
+      },
+      "field_sources": {
+        "kernel_version": ["uname -r"],
+        "kernel_arch": ["uname -a"],
+        "cmdline": ["/proc/cmdline"],
+        "important_kernel_args": ["/proc/cmdline"]
+      },
+      "notes": []
+    },
+    "bios": {
+      "section": "bios",
+      "bios_vendor": "unknown",
+      "bios_version": "unknown",
+      "bios_release_date": "unknown",
+      "system_vendor": "unknown",
+      "product_name": "unknown",
+      "board_vendor": "unknown",
+      "board_name": "unknown",
+      "boot_mode": "UEFI",
+      "smt_enabled": "enabled",
+      "numa_enabled_signal": "enabled",
+      "bios_observable_signals": [],
+      "bios_unavailable_items": ["bios_vendor", "bios_version"],
+      "confidence": "medium",
+      "field_confidence": {},
+      "field_sources": {},
+      "notes": []
+    },
+    "cpu": {
+      "section": "cpu",
+      "model": "AMD EPYC Sample",
+      "vendor": "AuthenticAMD",
+      "architecture": "x86_64",
+      "sockets": 2,
+      "physical_cores": 128,
+      "logical_cpus": 128,
+      "threads_per_core": 1,
+      "cpu_mhz_info": {"min_mhz": "1500.0000", "max_mhz": "2400.0000"},
+      "cache_summary": {"l1d": "6 MiB", "l1i": "4 MiB", "l2": "128 MiB", "l3": "512 MiB"},
+      "important_flags": ["fpu", "sse2", "avx2"],
+      "virtualization_support": "AMD-V",
+      "confidence": "high",
+      "field_confidence": {},
+      "field_sources": {},
+      "notes": []
+    },
+    "numa": {
+      "section": "numa",
+      "numa_node_count": 2,
+      "nodes": [{"node_id": 0, "cpus": [0, 1], "memory_mb": 1024}],
+      "numa_balancing": "0",
+      "gpu_numa_affinity": [],
+      "nic_numa_affinity": [],
+      "confidence": "high",
+      "field_confidence": {},
+      "field_sources": {},
+      "notes": []
+    },
+    "memory": {
+      "section": "memory",
+      "total_memory_mb": 1024,
+      "available_memory_mb": 512,
+      "free_memory_mb": 256,
+      "dimm_count": "unknown",
+      "dimms": [],
+      "memory_speed_mt_s": "unknown",
+      "memory_channels": "unknown",
+      "transparent_hugepages": "[madvise] always never",
+      "hugepages_summary": {"total": 0, "free": 0},
+      "confidence": "high",
+      "field_confidence": {},
+      "field_sources": {},
+      "notes": []
+    },
+    "gpu": {
+      "section": "gpu",
+      "gpu_count": 0,
+      "gpus": [],
+      "confidence": "none",
+      "field_confidence": {},
+      "field_sources": {},
+      "notes": []
+    },
+    "nic": {
+      "section": "nic",
+      "nics": [{"name": "eth0", "state": "UP", "mac": "00:11:22:33:44:55", "speed": "unknown", "pci_bus_id": "0000:81:00.0", "numa_node": "0", "driver": "mlx5_core", "firmware_version": "unknown", "rdma_capable": "unknown", "link_layer": "ethernet", "vendor": "unknown", "model": "unknown", "confidence": "medium"}],
+      "confidence": "medium",
+      "field_confidence": {},
+      "field_sources": {},
+      "notes": []
+    },
+    "pcie": {
+      "section": "pcie",
+      "pcie_devices": [{"bdf": "0000:81:00.0", "class": "Ethernet controller", "vendor": "Mellanox", "device": "ConnectX-5", "numa_node": "0", "link_cap_speed": "unknown", "link_cap_width": "unknown", "link_status_speed": "unknown", "link_status_width": "unknown", "mps": "unknown", "mrrs": "unknown", "confidence": "medium"}],
+      "confidence": "medium",
+      "field_confidence": {},
+      "field_sources": {},
+      "notes": []
+    },
+    "iommu": {
+      "section": "iommu",
+      "iommu_enabled": "true",
+      "iommu_type": "amd",
+      "iommu_passthrough": "true",
+      "kernel_cmdline_iommu_flags": ["amd_iommu=on", "iommu=pt"],
+      "iommu_groups_count": 64,
+      "confidence": "high",
+      "field_confidence": {},
+      "field_sources": {},
+      "notes": []
+    },
+    "driver": {
+      "section": "driver",
+      "gpu_driver_version": "unknown",
+      "driver_source_signal": "unknown",
+      "confidence": "none",
+      "field_confidence": {},
+      "field_sources": {},
+      "notes": []
+    },
+    "cuda": {
+      "section": "cuda",
+      "cuda_detected": false,
+      "cuda_runtime_version": "unknown",
+      "cuda_toolkit_version": "unknown",
+      "cuda_sources": ["nvcc --version", "/usr/local/cuda/version.json"],
+      "confidence": "none",
+      "field_confidence": {},
+      "field_sources": {},
+      "notes": []
+    },
+    "nccl": {
+      "section": "nccl",
+      "nccl_detected": false,
+      "nccl_version": "unknown",
+      "nccl_lib_paths": [],
+      "nccl_env": {},
+      "confidence": "none",
+      "field_confidence": {},
+      "field_sources": {},
+      "notes": []
+    },
+    "topology": {
+      "section": "topology",
+      "topo_matrix_raw": "",
+      "topo_nodes": [],
+      "gpu_to_gpu_links": [],
+      "topo_cpu_affinity": [],
+      "gpu_nic_topology_detected": false,
+      "gpu_nic_pairs": [],
+      "gpudirect_rdma_signal": "unknown",
+      "confidence": "none",
+      "field_confidence": {},
+      "field_sources": {},
+      "notes": []
+    }
+  },
+  "findings": [
+    {
+      "name": "gpu_inventory_detected",
+      "category": "gpu",
+      "status": "FAIL",
+      "observed_value": 0,
+      "expected_or_recommended_value": "At least one GPU visible on GPU server",
+      "impact": "No GPU inventory means GPU benchmark pipeline cannot proceed",
+      "recommendation": "Verify nvidia-smi, driver installation, and device visibility",
+      "confidence": "none",
+      "evidence_sources": ["nvidia-smi"]
+    }
+  ],
+  "scores": {
+    "overall": 92,
+    "breakdown": {
+      "firmware_bios": 10,
+      "cpu_numa": 20,
+      "memory": 10,
+      "gpu_pcie": 17,
+      "nic_network": 10,
+      "software_stack": 10,
+      "topology": 15
+    }
+  },
+  "tuning_recommendations": [
+    "[gpu] Verify nvidia-smi, driver installation, and device visibility"
+  ],
+  "raw_data_index": {
+    "gpu": {
+      "commands": [],
+      "raw_files": []
+    }
+  },
+  "collection_warnings": [
+    "dmidecode: permission denied",
+    "nvidia-smi: command not found"
+  ]
+}

@@ -1,0 +1,35 @@
+bios:
+  require_boot_mode_detection: true
+
+cpu:
+  require_cpu_visibility: true
+
+numa:
+  numa_balancing: 0
+
+memory:
+  transparent_hugepage_recommended: "madvise"
+
+gpu:
+  require_gpu_visibility: true
+
+pcie:
+  require_full_link_width_for_gpu: true
+
+nic:
+  require_nic_visibility: true
+
+iommu:
+  require_iommu_signal: true
+
+kernel:
+  preferred_cpu_governor: "performance"
+
+cuda:
+  require_driver_visible: true
+
+nccl:
+  allow_missing_nccl: true
+
+topology:
+  require_gpu_topology_if_nvidia_present: true
