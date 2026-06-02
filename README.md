@@ -27,6 +27,8 @@ The agent attempts to use Linux-native commands and files such as:
 - `numactl --hardware`
 - `free -m`
 - `nvidia-smi`
+- `nvidia-smi topo -m`
+- `nvidia-smi topo -p2p rw`
 - `ip -br link`
 - `ethtool`
 - `lspci`
@@ -113,3 +115,7 @@ The Markdown summary contains:
 - NCCL visibility is optional; missing NCCL is reported, not invented
 - GPU/NIC topology may be partial or approximate when the platform does not expose exact mapping
 - memory channels are only reported when directly inferable; otherwise `unknown`
+- NVIDIA topology commands are collected and persisted when available:
+  - `nvidia-smi`
+  - `nvidia-smi topo -m`
+  - `nvidia-smi topo -p2p rw`
