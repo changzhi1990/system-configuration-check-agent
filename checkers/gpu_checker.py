@@ -23,6 +23,8 @@ def _count_gpus_from_summary(raw_text: str) -> int:
 
 def check_gpu(section: dict, best: dict) -> list[Finding]:
     gpu_count = int(section.get("gpu_count", 0) or 0)
+    expected_gpu_count = best.get("expected_gpu_count")
+    expected_mismatch = expected_gpu_count is not None and gpu_count != expected_gpu_count
     findings = [
         Finding(
             name="gpu_inventory_detected",
@@ -38,8 +40,7 @@ def check_gpu(section: dict, best: dict) -> list[Finding]:
     ]
 
     summary_count = _count_gpus_from_summary(str(section.get("nvidia_smi_summary_raw", "")))
-    expected_gpu_count = best.get("expected_gpu_count")
-    if best.get("warn_on_gpu_count_inconsistency", False) and summary_count and summary_count != gpu_count:
+    if best.get("warn_on_gpu_count_inconsistency", False) and summary_count and summary_count != gpu_count and not expected_mismatch:
         findings.append(
             Finding(
                 name="gpu_inventory_consistency",
@@ -62,8 +63,8 @@ def check_gpu(section: dict, best: dict) -> list[Finding]:
                 status="FAIL",
                 observed_value=gpu_count,
                 expected_or_recommended_value=expected_gpu_count,
-                impact="GPU server does not expose the expected number of devices",
-                recommendation="Verify hardware health, PCIe visibility, and driver enumeration against the expected GPU count",
+                impact="Severe error: GPU server does not expose the expected number of devices, so configuration validation and downstream benchmark results are not trustworthy.",
+                recommendation="Treat this node as unhealthy, inspect the missing GPU on the PCIe bus and in nvidia-smi output, then re-run validation after the device is restored.",
                 confidence=section.get("field_confidence", {}).get("gpu_count", "none"),
                 evidence_sources=section.get("field_sources", {}).get("gpu_count", []),
             )
