@@ -36,15 +36,24 @@ PENALTIES = {
     "PASS": 0,
 }
 
+SPECIAL_PENALTIES = {
+    "gpu_inventory_expected_count": 50,
+}
+
 
 def score_report(findings: list[Finding]) -> Scores:
     bucket_scores = {bucket: weight for bucket, weight in WEIGHTS.items()}
+    severe_gpu_missing = False
     for finding in findings:
         bucket = CATEGORY_TO_BUCKET.get(finding.category)
-        if not bucket:
-            continue
-        bucket_scores[bucket] = max(0, bucket_scores[bucket] - PENALTIES[finding.status])
+        penalty = SPECIAL_PENALTIES.get(finding.name, PENALTIES[finding.status])
+        if bucket:
+            bucket_scores[bucket] = max(0, bucket_scores[bucket] - penalty)
+        if finding.name == "gpu_inventory_expected_count":
+            severe_gpu_missing = True
 
     breakdown = ScoreBreakdown(**bucket_scores)
     overall = sum(bucket_scores.values())
+    if severe_gpu_missing:
+        overall = min(overall, 50)
     return Scores(overall=overall, breakdown=breakdown)

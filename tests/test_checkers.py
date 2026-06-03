@@ -35,8 +35,22 @@ def test_scoring_drops_when_gpu_inventory_is_inconsistent() -> None:
         "field_confidence": {"gpu_count": "high", "nvidia_smi_summary_raw": "high"},
         "field_sources": {"gpu_count": ["nvidia-smi --query-gpu"], "nvidia_smi_summary_raw": ["nvidia-smi"]},
     }
-    findings = check_gpu(section, {"warn_on_gpu_count_inconsistency": True})
+    findings = check_gpu(section, {"warn_on_gpu_count_inconsistency": True, "expected_gpu_count": 8})
     scores = score_report(findings)
 
-    assert scores.overall < 100
-    assert scores.breakdown.gpu_pcie < 25
+    assert scores.overall == 50
+    assert scores.breakdown.gpu_pcie == 0
+
+
+def test_gpu_checker_fails_when_expected_gpu_count_is_missing() -> None:
+    section = {
+        "gpu_count": 7,
+        "nvidia_smi_summary_raw": "GPU 0:\nGPU 1:\nGPU 2:\nGPU 3:\nGPU 4:\nGPU 5:\nGPU 6:\nGPU 7:",
+        "field_confidence": {"gpu_count": "high", "nvidia_smi_summary_raw": "high"},
+        "field_sources": {"gpu_count": ["nvidia-smi --query-gpu"], "nvidia_smi_summary_raw": ["nvidia-smi"]},
+    }
+    findings = check_gpu(section, {"expected_gpu_count": 8, "warn_on_gpu_count_inconsistency": True})
+    expected = [finding for finding in findings if finding.name == "gpu_inventory_expected_count"]
+
+    assert expected
+    assert expected[0].status == "FAIL"

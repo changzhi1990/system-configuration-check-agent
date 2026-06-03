@@ -59,7 +59,7 @@ def check_gpu(section: dict, best: dict) -> list[Finding]:
             Finding(
                 name="gpu_inventory_expected_count",
                 category="gpu",
-                status="WARN" if gpu_count > 0 else "FAIL",
+                status="FAIL",
                 observed_value=gpu_count,
                 expected_or_recommended_value=expected_gpu_count,
                 impact="GPU server does not expose the expected number of devices",

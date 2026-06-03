@@ -13,6 +13,7 @@ memory:
 gpu:
   require_gpu_visibility: true
   warn_on_gpu_count_inconsistency: true
+  expected_gpu_count: 8
 
 pcie:
   require_full_link_width_for_gpu: true
