@@ -1,4 +1,4 @@
-# Codex Prompt For system-configuration-check-agent
+# Codex Prompt For `system-configuration-check-agent`
 
 You are asked to generate a production-grade, runnable Linux project named:
 
@@ -21,6 +21,7 @@ Build a production-quality Linux-only agent that performs:
 This agent is ONLY responsible for system configuration check.
 
 It must:
+
 - collect low-level Linux-visible hardware / firmware / OS / driver / topology signals
 - validate common GPU server misconfigurations
 - produce machine-readable outputs for downstream benchmarking/workload agents
@@ -29,6 +30,7 @@ It must:
 - include NVIDIA topology and peer-access signals when NVIDIA tools are available
 
 It must NOT:
+
 - run heavy benchmarks
 - run NCCL bandwidth test workloads
 - run agentic workload simulation
@@ -61,6 +63,7 @@ The agent MUST attempt to collect the following:
 - GPU/NIC topology relationship (if accessible)
 
 Important observability rules:
+
 - distinguish direct facts vs inferred signals vs unavailable information
 - if not reliably detectable, return `"unknown"` or `"not_accessible"`
 - never fabricate values
@@ -86,6 +89,7 @@ Important observability rules:
 ================================================================================
 
 You MUST generate:
+
 - full runnable project code
 - all source files
 - README.md
@@ -99,6 +103,7 @@ You MUST generate:
 You MUST generate REAL code, not pseudocode.
 
 Do NOT:
+
 - output concept explanation only
 - output architecture discussion only
 - skip file contents
@@ -109,6 +114,7 @@ Do NOT:
 5. REQUIRED PROJECT STRUCTURE
 ================================================================================
 
+```text
 system-configuration-check-agent/
 ├── README.md
 ├── AGENT.md
@@ -167,6 +173,7 @@ system-configuration-check-agent/
     ├── test_models.py
     ├── test_scoring.py
     └── test_collectors.py
+```
 
 ================================================================================
 6. CLI REQUIREMENTS
@@ -175,6 +182,7 @@ system-configuration-check-agent/
 Implement CLI in `agent.py`.
 
 Required examples:
+
 ```bash
 python agent.py --output output/report.json
 python agent.py --output output/report.json --format json
@@ -184,6 +192,7 @@ python agent.py --save-raw
 ```
 
 Optional:
+
 ```bash
 python agent.py --category gpu
 python agent.py --category topology
@@ -192,6 +201,7 @@ python agent.py --best-practices knowledge/best_practices.yaml
 ```
 
 CLI behavior:
+
 - `--save-raw` stores raw command outputs in `output/raw/`
 - `--verbose` prints collection/check progress
 - command failures must not abort the whole run
@@ -207,7 +217,8 @@ CLI behavior:
 
 Implement these shared capabilities:
 
-7.1 command runner
+### 7.1 command runner
+
 - safe subprocess execution
 - timeout support
 - capture stdout/stderr/return code
@@ -216,8 +227,10 @@ Implement these shared capabilities:
 - support command-not-found handling
 - support privileged command failure handling
 
-7.2 structured models
+### 7.2 structured models
+
 Use Python dataclasses or pydantic models for:
+
 - report metadata
 - collector outputs
 - findings
@@ -225,21 +238,27 @@ Use Python dataclasses or pydantic models for:
 - evidence references
 - command execution metadata
 
-7.3 confidence levels
-All collected or inferred signals must include confidence:
-- high   = directly observed from trusted source
-- medium = observed from indirect but credible source
-- low    = weak inference
-- none   = unavailable
+### 7.3 confidence levels
 
-7.4 evidence/source traceability
+All collected or inferred signals must include confidence:
+
+- `high`   = directly observed from trusted source
+- `medium` = observed from indirect but credible source
+- `low`    = weak inference
+- `none`   = unavailable
+
+### 7.4 evidence/source traceability
+
 Each key field or finding should include source references when possible, such as:
+
 - command names
 - file paths
 - parser note
 
-7.5 graceful degradation
-If commands like dmidecode / nvidia-smi / ethtool / ibv_devinfo / numactl are missing:
+### 7.5 graceful degradation
+
+If commands like `dmidecode`, `nvidia-smi`, `ethtool`, `ibv_devinfo`, or `numactl` are missing:
+
 - do not crash
 - continue
 - mark corresponding sections unavailable
@@ -253,10 +272,10 @@ If commands like dmidecode / nvidia-smi / ethtool / ibv_devinfo / numactl are mi
 8.1 BIOS COLLECTOR
 ------------------------------------------------------------------------------
 
-Linux usually cannot access full BIOS configuration.
-Collect ONLY Linux-visible BIOS / firmware signals.
+Linux usually cannot access full BIOS configuration. Collect ONLY Linux-visible BIOS / firmware signals.
 
 Try to collect:
+
 - BIOS vendor
 - BIOS version
 - BIOS release date
@@ -272,6 +291,7 @@ Try to collect:
 - kernel cmdline firmware-related signals if relevant
 
 Preferred sources:
+
 - `/sys/class/dmi/id/*`
 - `dmidecode`
 - `lscpu`
@@ -280,6 +300,7 @@ Preferred sources:
 - `/sys/firmware/efi`
 
 Required BIOS output object:
+
 ```json
 {
   "bios_vendor": "",
@@ -299,15 +320,18 @@ Required BIOS output object:
 ```
 
 Do NOT claim:
+
 - exact hidden BIOS toggle values
 - full BIOS menu configuration
-unless directly verifiable from Linux-visible signals
+
+unless directly verifiable from Linux-visible signals.
 
 ------------------------------------------------------------------------------
 8.2 CPU COLLECTOR
 ------------------------------------------------------------------------------
 
 Collect:
+
 - CPU model
 - architecture
 - vendor
@@ -322,10 +346,12 @@ Collect:
 - virtualization signal if available
 
 Preferred sources:
+
 - `lscpu`
 - `/proc/cpuinfo`
 
 Required fields:
+
 - model
 - vendor
 - architecture
@@ -344,6 +370,7 @@ Required fields:
 ------------------------------------------------------------------------------
 
 Collect:
+
 - number of NUMA nodes
 - CPUs belonging to each node
 - memory per NUMA node if accessible
@@ -352,6 +379,7 @@ Collect:
 - NIC to NUMA affinity if accessible
 
 Preferred sources:
+
 - `numactl --hardware`
 - `lscpu`
 - `/sys/devices/system/node/`
@@ -359,6 +387,7 @@ Preferred sources:
 - sysfs links for devices
 
 Required output:
+
 ```json
 {
   "numa_node_count": 0,
@@ -381,6 +410,7 @@ Required output:
 ------------------------------------------------------------------------------
 
 Collect:
+
 - total system memory
 - available memory
 - free memory
@@ -391,12 +421,14 @@ Collect:
 - hugepages summary
 
 Preferred sources:
+
 - `free -m`
 - `/proc/meminfo`
 - `dmidecode --type memory`
 - `/sys/kernel/mm/transparent_hugepage/enabled`
 
 Required fields:
+
 - total_memory_mb
 - available_memory_mb
 - free_memory_mb
@@ -415,6 +447,7 @@ Do NOT fabricate memory channel count.
 ------------------------------------------------------------------------------
 
 Collect:
+
 - GPU vendor
 - GPU count
 - GPU model
@@ -432,14 +465,16 @@ Collect:
 - plain `nvidia-smi` summary output as raw text
 
 Preferred sources:
+
 - `nvidia-smi`
 - `nvidia-smi -q`
 - `nvidia-smi --query-gpu=... --format=csv,noheader,nounits`
 - `lspci`
 - `/proc/driver/nvidia/`
-- fallback to generic PCIe detection if nvidia-smi absent
+- fallback to generic PCIe detection if `nvidia-smi` is absent
 
 Required fields:
+
 ```json
 {
   "gpu_count": 0,
@@ -472,6 +507,7 @@ Required fields:
 ------------------------------------------------------------------------------
 
 Collect:
+
 - interface names
 - state
 - MAC address
@@ -485,6 +521,7 @@ Collect:
 - link layer if accessible
 
 Preferred sources:
+
 - `ip -br link`
 - `ip addr`
 - `ethtool -i <iface>`
@@ -496,6 +533,7 @@ Preferred sources:
 - `ibv_devinfo`
 
 Required fields:
+
 ```json
 {
   "nics": [
@@ -523,12 +561,14 @@ Required fields:
 ------------------------------------------------------------------------------
 
 Collect relevant PCIe devices for GPU server analysis:
+
 - GPUs
 - NICs
 - NVMe devices
 - PCIe bridges / switches if visible
 
 Collect:
+
 - BDF
 - class
 - vendor/device
@@ -538,11 +578,13 @@ Collect:
 - MRRS
 
 Preferred sources:
+
 - `lspci`
 - `lspci -tv`
 - `lspci -vv`
 
 Required fields:
+
 ```json
 {
   "pcie_devices": [
@@ -569,6 +611,7 @@ Required fields:
 ------------------------------------------------------------------------------
 
 Collect:
+
 - whether IOMMU is enabled
 - whether Intel or AMD IOMMU signal exists
 - passthrough mode if visible
@@ -576,11 +619,13 @@ Collect:
 - iommu group count if accessible
 
 Preferred sources:
+
 - `/proc/cmdline`
 - `dmesg | grep -i iommu`
 - `/sys/kernel/iommu_groups/`
 
 Required fields:
+
 ```json
 {
   "iommu_enabled": "",
@@ -597,15 +642,18 @@ Required fields:
 ------------------------------------------------------------------------------
 
 Collect:
+
 - NVIDIA driver version
 - driver source signal if accessible
 
 Preferred sources:
+
 - `nvidia-smi`
 - `/proc/driver/nvidia/version`
 - package query if safe
 
 Required fields:
+
 - gpu_driver_version
 - driver_source_signal
 - confidence
@@ -615,19 +663,22 @@ Required fields:
 ------------------------------------------------------------------------------
 
 Collect ONLY if accessible:
+
 - CUDA runtime version
 - CUDA toolkit version
 - nvcc version
 - version.json or version.txt under `/usr/local/cuda`
-- CUDA version reported by nvidia-smi
+- CUDA version reported by `nvidia-smi`
 
 Preferred sources:
+
 - `nvcc --version`
 - `/usr/local/cuda/version.json`
 - `/usr/local/cuda/version.txt`
 - `nvidia-smi`
 
 Required fields:
+
 ```json
 {
   "cuda_detected": true,
@@ -638,25 +689,27 @@ Required fields:
 }
 ```
 
-Important:
-Do NOT assume CUDA toolkit is installed just because driver exists.
+Important: do NOT assume CUDA toolkit is installed just because driver exists.
 
 ------------------------------------------------------------------------------
 8.11 NCCL COLLECTOR
 ------------------------------------------------------------------------------
 
 Collect ONLY if accessible:
+
 - NCCL shared library presence/version
 - package version if visible
 - library paths
 - environment variables relevant to NCCL
 
 Preferred sources:
+
 - `ldconfig -p | grep nccl`
 - package manager query
 - env vars
 
 Required fields:
+
 ```json
 {
   "nccl_detected": true,
@@ -668,14 +721,16 @@ Required fields:
 ```
 
 Important:
-If NCCL is not discoverable, mark unavailable.
-Do NOT fabricate version strings.
+
+- if NCCL is not discoverable, mark unavailable
+- do NOT fabricate version strings
 
 ------------------------------------------------------------------------------
 8.12 OS COLLECTOR
 ------------------------------------------------------------------------------
 
 Collect:
+
 - distro
 - distro version
 - pretty name
@@ -683,10 +738,12 @@ Collect:
 - VERSION_ID
 
 Preferred sources:
+
 - `/etc/os-release`
 - `hostnamectl`
 
 Required fields:
+
 - distro
 - version
 - pretty_name
@@ -698,6 +755,7 @@ Required fields:
 ------------------------------------------------------------------------------
 
 Collect:
+
 - kernel version
 - kernel architecture
 - uname summary
@@ -705,11 +763,13 @@ Collect:
 - selected performance-relevant kernel args
 
 Preferred sources:
+
 - `uname -r`
 - `uname -a`
 - `/proc/cmdline`
 
 Required fields:
+
 - kernel_version
 - kernel_arch
 - cmdline
@@ -723,6 +783,7 @@ Required fields:
 Collect a CURATED subset only.
 
 Must inspect where possible:
+
 - `kernel.numa_balancing`
 - `vm.nr_hugepages`
 - THP status
@@ -733,6 +794,7 @@ Must inspect where possible:
 - isolated CPUs / `nohz_full` / `rcu_nocbs` cmdline flags if present
 
 Preferred sources:
+
 - `sysctl`
 - `/proc`
 - `/sys/devices/system/cpu/`
@@ -740,6 +802,7 @@ Preferred sources:
 - `/proc/cmdline`
 
 Required fields:
+
 ```json
 {
   "sysctl": {},
@@ -758,6 +821,7 @@ Required fields:
 GPU topology collection is mandatory if NVIDIA GPUs exist.
 
 Collect:
+
 - raw output of `nvidia-smi topo -m`
 - raw output of `nvidia-smi topo -p2p rw`
 - parsed topology matrix
@@ -766,6 +830,7 @@ Collect:
 - NIC entries if present
 
 Required fields:
+
 ```json
 {
   "topo_matrix_raw": "",
@@ -778,6 +843,7 @@ Required fields:
 ```
 
 If parsing fails:
+
 - store raw output
 - do not crash
 - mark parse quality accordingly
@@ -787,6 +853,7 @@ If parsing fails:
 ------------------------------------------------------------------------------
 
 Collect if accessible:
+
 - whether GPU and NIC appear in same topology matrix
 - GPU PCI BDF
 - NIC PCI BDF
@@ -796,6 +863,7 @@ Collect if accessible:
 - GPUDirect / RDMA signal ONLY if supported by evidence
 
 Preferred sources:
+
 - `nvidia-smi topo -m`
 - `nvidia-smi topo -p2p rw`
 - `lspci`
@@ -805,6 +873,7 @@ Preferred sources:
 - `rdma link`
 
 Required fields:
+
 ```json
 {
   "gpu_nic_topology_detected": "",
@@ -824,8 +893,7 @@ Required fields:
 }
 ```
 
-Important:
-If exact mapping is weak or partial, say so clearly.
+Important: if exact mapping is weak or partial, say so clearly.
 
 ================================================================================
 9. VALIDATION / CHECKER REQUIREMENTS
@@ -867,6 +935,7 @@ Required checks include at least:
 Create `knowledge/best_practices.yaml` with human-editable recommended values.
 
 Include categories such as:
+
 - bios
 - cpu
 - numa
@@ -881,6 +950,7 @@ Include categories such as:
 - topology
 
 Example structure:
+
 ```yaml
 bios:
   require_boot_mode_detection: true
@@ -961,6 +1031,7 @@ The final JSON report MUST follow this structure:
 ```
 
 Requirements:
+
 - structured objects, not giant text blobs
 - use `"unknown"` / `"not_accessible"` where needed
 - include traceability where possible
@@ -992,11 +1063,13 @@ It must include these sections:
 - `Raw Evidence`
 
 The three NVIDIA sections must be rendered from:
+
 - `system_summary.gpu.nvidia_smi_summary_raw`
 - `system_summary.topology.topo_matrix_raw`
 - `system_summary.topology.topo_p2p_rw_raw`
 
 Render them as aligned tables with:
+
 - `Line`
 - `Content`
 
@@ -1007,6 +1080,7 @@ Render them as aligned tables with:
 Implement a transparent, explainable score from 0 to 100.
 
 Suggested weighted categories:
+
 - firmware_bios: 10
 - cpu_numa: 20
 - memory: 10
@@ -1016,6 +1090,7 @@ Suggested weighted categories:
 - topology: 15
 
 Scoring principles:
+
 - actual misconfigurations reduce score
 - incomplete observability reduces confidence, not always score directly
 - severe GPU PCIe under-negotiation should reduce score significantly
@@ -1028,17 +1103,20 @@ Scoring principles:
 ================================================================================
 
 If `--save-raw` is enabled, store raw outputs here:
+
 - `output/raw/bios_*.txt`
 - `output/raw/cpu_*.txt`
 - `output/raw/numa_*.txt`
 - etc.
 
 Also store:
+
 - command execution metadata
 - failed commands
 - stderr where useful
 
 The following files must be supported when NVIDIA tools are present:
+
 - `output/raw/gpu_gpu_nvidia_summary.txt`
 - `output/raw/topology_topology_nvidia_topo.txt`
 - `output/raw/topology_topology_nvidia_p2p_rw.txt`
@@ -1048,6 +1126,7 @@ The following files must be supported when NVIDIA tools are present:
 ================================================================================
 
 README.md must include:
+
 - what this agent does
 - what this agent does NOT do
 - supported Linux commands and fallback behavior
@@ -1067,6 +1146,7 @@ README.md must include:
 ================================================================================
 
 AGENT.md must describe:
+
 - role of this agent in the larger benchmark suite
 - input/output contract
 - downstream usage order
@@ -1081,6 +1161,7 @@ AGENT.md must describe:
 ================================================================================
 
 Define these callable skills:
+
 - collect_all_system_signals
 - validate_system_configuration
 - build_structured_report
@@ -1088,6 +1169,7 @@ Define these callable skills:
 - export_markdown_summary
 
 For each skill include:
+
 - purpose
 - input
 - output
@@ -1099,6 +1181,7 @@ For each skill include:
 ================================================================================
 
 Add lightweight tests for:
+
 - parser robustness
 - model validation
 - scoring logic
@@ -1137,4 +1220,4 @@ Do not produce pseudocode.
 Do not leave major modules unimplemented.
 Do not fabricate unsupported observability.
 
-Generate REAL runnable code.*** End Patch
+Generate REAL runnable code.

@@ -99,10 +99,9 @@ def main() -> int:
 
         logger.info("JSON report: %s", json_path)
         logger.info("Markdown report: %s", md_path)
-        if args.format == "markdown":
-            print(build_markdown_summary(report))
-        else:
-            print(report.model_dump_json(indent=2))
+        print(f"REPORT_JSON={json_path}")
+        print(f"REPORT_MD={md_path}")
+        print(md_path.read_text(encoding="utf-8"))
         return 0
     except Exception as exc:  # pragma: no cover - framework fatal path
         get_logger().exception("Unrecoverable framework error: %s", exc)
